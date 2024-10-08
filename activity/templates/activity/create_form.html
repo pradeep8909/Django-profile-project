@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Full Form</title>
+</head>
+<body>
+    <h1>Create Full Form</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <h2>Sections</h2>
+        {{ section_formset.management_form }}
+        {% for section_form in section_formset %}
+            {{ section_form.as_p }}
+            
+            <h3>Questions</h3>
+            {{ section_form.instance.question_set.all.management_form }}
+            {% for question_form in section_form.instance.question_set.all %}
+                {{ question_form.as_p }}
+                
+                <h4>Options</h4>
+                {{ question_form.instance.option_set.all.management_form }}
+                {% for option_form in question_form.instance.option_set.all %}
+                    {{ option_form.as_p }}
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+        
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

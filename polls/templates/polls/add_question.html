@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Question</title>
+</head>
+<body>
+    <h1>Add a new question</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="question_text">Question:</label>
+        <input type="text" id="question_text" name="question_text" required><br><br>
+        <label for="pub_date">Publication Date and Time:</label>
+        <input type="datetime-local" id="pub_date" name="pub_date" required><br><br>
+        
+        <button type="submit">Submit</button>
+</body>
+</html>

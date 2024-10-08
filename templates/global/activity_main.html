@@ -1,0 +1,151 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block content %}
+    
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10"><b>{{ form.name }}</b></h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Form </a></li>
+                            <li class="breadcrumb-item"><a href="#!">Form </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>{{ form.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="row">
+                                {% for section in sections %}
+                                    <div class="col-12">
+                                        <h5>{{ section.name }}</h5>
+                                    </div>
+                                    <br></br>
+                                    <br></br>
+                    
+                                    {% for question in section.section_name.all %}
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="floating-label" for="question_{{ question.id }}">{{ question.name }}</label>
+                                                
+                                                {% if question.type == 'T' %}
+                                                    <!-- Text Input -->
+                                                    <input type="text" class="form-control" id="question_{{ question.id }}" name="question_{{ question.id }}" placeholder="Enter {{ question.name }}">
+                                                
+                                                {% elif question.type == 'S' %}
+                                                    <!-- Single Choice (Select) -->
+                                                    <select class="form-control" id="question_{{ question.id }}" name="question_{{ question.id }}">
+                                                        {% for option in question.question_name.all %}
+                                                            <option value="{{ option.id }}">{{ option.text }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                
+                                                {% elif question.type == 'MS' %}
+                                                    <!-- Multiple Choice (Select Multiple) -->
+                                                    <select class="form-control" id="question_{{ question.id }}" name="question_{{ question.id }}[]" multiple>
+                                                        {% for option in question.question_name.all %}
+                                                            <option value="{{ option.id }}">{{ option.text }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                
+                                                {% elif question.type == 'R' %}
+                                                    <!-- Radiobutton -->
+                                                    {% for option in question.question_name.all %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" id="question_{{ question.id }}_{{ option.id }}" name="question_{{ question.id }}" value="{{ option.id }}">
+                                                            <label class="form-check-label" for="question_{{ question.id }}_{{ option.id }}">{{ option.text }}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                
+                                                {% elif question.type == 'C' %}
+                                                    <!-- Checkbox -->
+                                                    {% for option in question.question_name.all %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="question_{{ question.id }}_{{ option.id }}" name="question_{{ question.id }}[]" value="{{ option.id }}">
+                                                            <label class="form-check-label" for="question_{{ question.id }}_{{ option.id }}">{{ option.text }}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                
+                                                {% elif question.type == 'D' %}
+                                                    <!-- Date Input -->
+                                                    <input type="date" class="form-control" id="question_{{ question.id }}" name="question_{{ question.id }}" placeholder="Enter Date">
+                                                
+                                                {% elif question.type == 'F' %}
+                                                    <!-- File Input -->
+                                                    <input type="file" class="form-control" id="question_{{ question.id }}" name="question_{{ question.id }}">
+                                                
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    {% if section.map %}
+                                        <!-- Google Maps Section -->
+                                        <div id="map" style="height: 300px; width: 50%;"></div>
+                                        
+                                    {% endif %}
+
+
+                                {% endfor %}
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>    
+                        <script src="https://maps.googleapis.com/maps/api/js?key={{ AIzaSyC2tcEzfE_eCiUW5FmNTRZZU0hsDwLKpOA }}&callback=initMap" async defer></script>
+                        <script>
+                            function initMap() {
+                            var location = { lat: 28.7041, lng: 77.1025 };  // Example: New Delhi coordinates
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                                zoom: 10,
+                                center: location
+                            });
+
+                            var marker = new google.maps.Marker({
+                                position: location,
+                                map: map,
+                                draggable: true  // Allow marker to be dragged
+                            });
+
+                            // Event listener for marker position change
+                            google.maps.event.addListener(marker, 'dragend', function(event) {
+                                var lat = event.latLng.lat();
+                                var lng = event.latLng.lng();
+                                console.log("Latitude: " + lat + ", Longitude: " + lng); // Debugging
+
+
+                                // Set the latitude and longitude in the corresponding input fields
+                                document.querySelector('input[name="14"]').value = lat;
+                                document.querySelector('input[name="15"]').value = lng;
+                            });
+                        }
+
+                        </script>
+  
+                    </div>
+                </div>   
+            </div>
+            <!-- [ form-element ] end -->
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</section>
+
+{% endblock %}

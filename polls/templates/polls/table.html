@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polls List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .download-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: lightsalmon;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+        }
+        .download-button:hover {
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+<body>
+    <h1>Questions List</h1>
+    
+    <strong><a href=" /polls/add/" class="download-button">ADD QUESTION</a></strong>
+    <br>
+    <br>
+    <strong><a href="/polls/uploadcsv/" class="download-button">UPLOAD CSV FILE</a></strong>
+    <br>
+    <br>
+    <strong><a href="/polls/download/questions/" class="download-button">DOWNLOAD CSV FILE </a></strong>
+    <br>
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>Question_Id</th>
+                <th>Questions</th>
+                <th>Publication Date</th>
+                <th>Published Time</th>
+                <th>Question_Update/Edit</th>
+                <th>Delete_Question</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for q in questions%}
+                <tr>
+                    <td>{{q.pk}}</td>
+                    <td>{{ q.question_text}}</td>
+                    <td>{{ q.pub_date|date:"d-m-y" }}</td>
+                    <td>{{ q.pub_date|time:"H:i:s"}}</td>
+                    <td>
+                        <a href="{% url 'polls:edit_question' q.pk %}">Edit</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'polls:delete_question' q.pk %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

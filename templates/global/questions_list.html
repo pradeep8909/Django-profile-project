@@ -1,0 +1,108 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="pcoded-main-container">
+    <div class="pcoded-content">
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Question Tables</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="global/index.html"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Question Details</a></li>
+                            <li class="breadcrumb-item"><a href="#!"> Tables</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Question Table</h5>
+                        <span class="d-block m-t-5">Questions and their complete detail are been shown in the below table:</span>
+                    </div>
+                    <div class="card-body table-border-style">
+                        <div class="card-body">
+                            <button type="button" class="btn btn-primary"><a href="/polls/add" style="color: white;">Add question</a></button>
+                            <button type="button" class="btn btn-secondary"><a href="/polls/uploadcsv/" style="color: aliceblue;">Upload CSV file</a></button>
+                            <button type="button" class="btn btn-success"><a href="/polls/download/questions" style="color: aliceblue;">Download CSV file</a></button>
+                            <button type="button" class="btn btn-dark"><a href="/polls/export/questions/" style="color: aliceblue;">Export!</a></button>
+                            <button type="button" class="btn btn-warning has-ripple"><a href="/polls/import/" style="color: aliceblue;">Import!</a></button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Question id</th>
+                                        <th>Question text</th>
+                                        <th>Publication Date</th>
+                                        <th>Published Time</th>
+                                        <th>Action</th>
+                                        <th>Status</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="questionsTableBody">
+                                    <!-- Data will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="pagination">
+                            <!-- Pagination links will be inserted here -->
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function fetchQuestions(page = 1) {
+            $.ajax({
+                url: '/polls/get_questions/' ,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var rows = '';
+                    $.each(data, function(index, question) {
+                        rows += '<tr>';
+                        rows += '<td>' + question.id + '</td>';
+                        rows += '<td>' + question.question_text + '</td>';
+                        rows += '<td>' + new Date(question.pub_date).toLocaleDateString() + '</td>';
+                        rows += '<td>' + new Date(question.pub_date).toLocaleTimeString() + '</td>';
+                        rows += '<td><a class="btn btn-outline-secondary btn-sm edit" href="/polls/edit/' + question.id + '"><i class="fas fa-pencil-alt"></i></a></td>';
+                        rows += '<td>' + (question.status == 2 ? '<a href="/polls/question_status/' + question.id + '"><button type="button" class="btn btn-icon btn-danger has-ripple"><i class="feather icon-slash"></i></button></a>' : '<a href="/polls/question_status/' + question.id + '"><button type="button" class="btn btn-icon btn-success has-ripple"><i class="feather icon-check-circle"></i></button></a>') + '</td>';
+                        rows += '<td><a href="/polls/delete/' + question.id + '"><button style="background-color: rgb(247, 6, 6); color: white; border: none;"><b>Delete</b></button></a></td>';
+                        rows += '</tr>';
+                    });
+                    $('#questionsTableBody').html(rows);
+                    
+                    // Handle pagination here if necessary
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error: ' + status + error);
+                }
+            });
+        }
+
+        fetchQuestions(); // Fetch questions on page load
+
+        // Pagination link click handler
+        $(document).on('click', '#pagination a', function(e) {
+            e.preventDefault();
+            var page = $(this).attr('href').split('page=')[1];
+            fetchQuestions(page);
+        });
+    });
+</script>
+{% endblock %}

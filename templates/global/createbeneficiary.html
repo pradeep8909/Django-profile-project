@@ -1,0 +1,217 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="pcoded-main-container">
+    <div class="pcoded-content">
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Create Beneficiary</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#!"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Create Beneficiary</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Create Beneficiary</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="beneficiaryForm" class="form-vertical">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="beneficiaryname"><b>Beneficiary Name:</b></label>
+                                        <input type="text" id="beneficiaryname" name="beneficiaryname" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="type"><b>Beneficiary Type:</b></label>
+                                        <select id="type" name="type" class="form-control" required>
+                                            <option value="">Select Type</option>
+                                            {% for btype in beneficiary_types %}
+                                                <option value="{{ btype.id }}">{{ btype.beneficiarytype }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="grade"><b>Grade:</b></label>
+                                        <select id="grade" name="grade" class="form-control" required>
+                                            <option value="">Select Grade</option>
+                                            {% for grade in grades %}
+                                                <option value="{{ grade.id }}">{{ grade.grade }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if is_admin %}
+                                        <!-- Admin: Can select any country, state, district, and school -->
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="country"><b>Country:</b></label>
+                                                    <select id="country" name="country" class="form-control" required>
+                                                        <option value="">Select Country</option>
+                                                        {% for country in countries %}
+                                                            <option value="{{ country.id }}">{{ country.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="state"><b>State:</b></label>
+                                                    <select id="state" name="state" class="form-control" required>
+                                                        <option value="">Select State</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="district"><b>District:</b></label>
+                                                    <select id="district" name="district" class="form-control" required>
+                                                        <option value="">Select District</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="school"><b>School:</b></label>
+                                                    <select id="school" name="school" class="form-control" required>
+                                                        <option value="">Select School</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <!-- Non-admin users: Auto-selected and non-editable fields -->
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="country"><b>Country:</b></label>
+                                                    <input type="text" name="country" value="{{ selected_country.name }}" class="form-control" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="state"><b>State:</b></label>
+                                                    <input type="text" name="state" value="{{ selected_state.name }}" class="form-control" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="district"><b>District:</b></label>
+                                                    <input type="text" name="district" value="{{ selected_district.name }}" class="form-control" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="school"><b>School:</b></label>
+                                                    <input type="hidden" name="school" value="{{ selected_school.id }}">
+                                                    <input type="text" value="{{ selected_school.School_Name }}" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                {% endif %}
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <input type="submit" value="Add Beneficiary" class="btn btn-primary mt-4">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </form>
+                        
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script type="text/javascript">
+                            // Load states based on the selected country
+                            $("#country").change(function () {
+                                var url = "{% url 'ajax_load_states' %}";
+                                var countryId = $(this).val();
+
+                                $.ajax({
+                                    url: url,
+                                    data: {
+                                        'country_id': countryId
+                                    },
+                                    success: function (data) {
+                                        $("#state").html('<option value="">Select State</option>');
+                                        $("#district").html('<option value="">Select District</option>');
+                                        $("#school").html('<option value="">Select School</option>');
+                                        $.each(data, function (key, value) {
+                                            $("#state").append('<option value="' + value.id + '">' + value.name + '</option>');
+                                        });
+                                    }
+                                });
+                            });
+
+                            // Load districts based on the selected state
+                            $("#state").change(function () {
+                                var url = "{% url 'ajax_load_districts' %}";
+                                var stateId = $(this).val();
+
+                                $.ajax({
+                                    url: url,
+                                    data: {
+                                        'state_id': stateId
+                                    },
+                                    success: function (data) {
+                                        $("#district").html('<option value="">Select District</option>');
+                                        $("#school").html('<option value="">Select School</option>');
+                                        $.each(data, function (key, value) {
+                                            $("#district").append('<option value="' + value.id + '">' + value.name + '</option>');
+                                        });
+                                    }
+                                });
+                            });
+
+                            // Load schools based on the selected district
+                            $("#district").change(function () {
+                                var url = "{% url 'ajax_load_schools' %}";
+                                var districtId = $(this).val();
+
+                                $.ajax({
+                                    url: url,
+                                    data: {
+                                        'district_id': districtId
+                                    },
+                                    success: function (data) {
+                                        $("#school").html('<option value="">Select School</option>');
+                                        $.each(data, function (key, value) {
+                                            $("#school").append('<option value="' + value.id + '">' + value.School_Name + '</option>');
+                                        });
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

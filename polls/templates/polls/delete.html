@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Delete</title>
+</head>
+<body>
+    <h1 >Are you sure you want to delete this question?</h1>
+    <p><strong>Question :</strong> {{ item.question_text }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background-color: red;color: white;"><strong>YES,DELETE</strong></button><br></br>
+        <a href="/polls/table/">No, go back</a>
+    </form>
+</body>
+</html>

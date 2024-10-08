@@ -1,0 +1,135 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="pcoded-main-container">
+    <div class="pcoded-content">
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Edit Beneficiary</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Beneficiary Details</a></li>
+                            <li class="breadcrumb-item"><a href="#!">Edit Beneficiary</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Edit Beneficiary</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="beneficiaryname"><b>Beneficiary Name:</b></label>
+                                        <input type="text" id="beneficiaryname" name="beneficiaryname" class="form-control" value="{{ beneficiary.beneficiaryname }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="type"><b>Beneficiary Type:</b></label>
+                                        <select id="type" name="type" class="form-control" required>
+                                            {% for type in beneficiary_types %}
+                                                <option value="{{ type.id }}" {% if type.id == beneficiary.type_id %}selected{% endif %}>
+                                                    {{ type.beneficiarytype }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="gradechoice"><b>Grade:</b></label>
+                                        <select id="gradechoice" name="gradechoice" class="form-control" required>
+                                            {% for grade in grades %}
+                                                <option value="{{ grade.id }}" {% if grade.id == beneficiary.gradechoice_id %}selected{% endif %}>
+                                                    {{ grade.grade }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="country"><b>Country:</b></label>
+                                        <select id="country" name="country" class="form-control" required>
+                                            {% for country in countries %}
+                                                <option value="{{ country.id }}" {% if country.id == beneficiary.location.School_Locaion.parent.parent.id %}selected{% endif %}>
+                                                    {{ country.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="state"><b>State:</b></label>
+                                        <select id="state" name="state" class="form-control" required>
+                                            {% for state in states %}
+                                                <option value="{{ state.id }}" {% if state.id == beneficiary.location.School_Locaion.parent.id %}selected{% endif %}>
+                                                    {{ state.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="district"><b>District:</b></label>
+                                        <select id="district" name="district" class="form-control" required>
+                                            {% for district in districts %}
+                                                <option value="{{ district.id }}" {% if district.id == beneficiary.location.School_Locaion.id %}selected{% endif %}>
+                                                    {{ district.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="location"><b>School:</b></label>
+                                        <select id="location" name="location" class="form-control" required>
+                                            {% for school in schools %}
+                                                <option value="{{ school.id }}" {% if school.id == beneficiary.location_id %}selected{% endif %}>
+                                                    {{ school.School_Name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn btn-primary mt-4">Save changes</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

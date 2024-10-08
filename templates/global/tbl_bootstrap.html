@@ -1,0 +1,114 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Question Tables</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="global/index.html"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Question Details</a></li>
+                            <li class="breadcrumb-item"><a href="#!"> Tables</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+		 
+        <div class="row">
+            
+            <!-- [ dark-table ] end -->
+            <!-- [ stiped-table ] start -->
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+						
+                        <h5>Question Table</h5>
+                        <span class="d-block m-t-5">Questions and their complete detail are been shown in the below tabel  :-</span>
+						
+					</div>
+                    <div class="card-body table-border-style">
+						<div class="card-body">
+							<button type="button" class="btn  btn-primary"><a href="/polls/add" style="color: white;"> Add question</a></button>
+							<button type="button" class="btn  btn-secondary"><a href="/polls/uploadcsv/" style="color: aliceblue;">Upload CSV file</a></button>
+							<button type="button" class="btn  btn-success"><a href="/polls/download/questions" style="color: aliceblue;">Download CSV file</a></button>
+                            <button type="button" class="btn  btn-dark"><a href="/polls/export/questions/" style="color: aliceblue;">Export!</a></button>
+                            <button type="button" class="btn btn-warning has-ripple"><a href="/polls/import/" style="color: aliceblue;">Import!</a></button>
+
+						</div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Question id</th>
+                                        <th>Question text</th>
+                                        <th>Publication Date</th>
+                                        <th>Published Time	</th>
+										<th>Action</th>
+										<th>Status</th>
+										<th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for q in page_obj%}   
+                                    <tr>
+                                        <td>{{q.pk}}</td>
+                                        <td>{{ q.question_text}}</td>
+                                        <td>{{ q.pub_date|date:"d-m-y" }}</td>
+                                        <td>{{ q.pub_date|time:"H:i:s"}}</td>
+										<td>
+											<a class="btn btn-outline-secondary btn-sm edit" href="{% url 'polls:edit_question' q.pk %}"><i class="fas fa-pencil-alt"></i></a>
+										</td>
+										<td>
+											{% if q.status == 2 %}
+											<a href="{% url 'polls:question_status' q.pk %}"><button type="button" class="btn btn-icon btn-danger has-ripple"><i class="feather icon-slash"></i><span class="ripple ripple-animate" style="height: 45px; width: 45px; animation-duration: 0.7s; animation-timing-function: linear; background: rgb(255, 255, 255); opacity: 0.4; top: -3.1875px; left: 4.57812px;"></span></button></a>
+    										{% else %}
+											<a href="{% url 'polls:question_status' q.pk %}"><button type="button" class="btn btn-icon btn-success has-ripple"><i class="feather icon-check-circle"></i><span class="ripple ripple-animate" style="height: 45px; width: 45px; animation-duration: 0.7s; animation-timing-function: linear; background: rgb(255, 255, 255); opacity: 0.4; top: -0.1875px; left: -13.7812px;"></span></button></a>
+    										{% endif %}
+										</td>
+										<td>
+											<a href="{% url 'polls:delete_question' q.pk %}"><button style="background-color: rgb(247, 6, 6);color: white; border: none;"><b>Delete</b></button></a>
+										</td>
+                                    </tr>
+                                {% endfor %}    
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page=1">&laquo; first</a>
+                                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                {% endif %}
+                    
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                </span>
+                    
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- [ Background-Utilities ] end -->
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</section>
+{% endblock %}

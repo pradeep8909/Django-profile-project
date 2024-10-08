@@ -1,0 +1,78 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Question Tables</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="global/index.html"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">User Details</a></li>
+                            <li class="breadcrumb-item"><a href="#!"> Tables</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+
+            
+            <!-- [ dark-table ] end -->
+            <!-- [ stiped-table ] start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>User Table</h5>
+                        <span class="d-block m-t-5">Users and their complete detail are been shown in the below tabel  :-</span>
+                    </div>
+                    <div class="card-body table-border-style">
+                        <button type="button" class="btn  btn-primary"><a href="/profile/register" style="color: white;"> Add User</a></button>
+                        <br>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email address</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Edit User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for q in data %}   
+                                    <tr>
+                                        <td>{{q.username}}</td>
+										<td>{{q.email}}</td>
+										<td>{{q.first_name}}</td>
+										<td>{{q.last_name}}</td>
+                                        <td>
+                                            <a class="btn btn-outline-secondary btn-sm edit" href="{% url 'edit_profile' q.id %}"><i class="fas fa-pencil-alt"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- [ Background-Utilities ] end -->
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</section>
+{% endblock %}
